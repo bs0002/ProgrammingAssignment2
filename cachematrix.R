@@ -5,18 +5,13 @@
 
 makeCacheMatrix <- function(x = matrix()) 
 {
-  m <- NULL
-  set <- function(y)
-  {
-    x <<- y
-    m <<- NULL
-  }
-  get <- function() x
-  setInverse <- function(inv) m <<- inv
-  getInverse <- function() m
-  list(set = set, get = get,
+  m <- NULL # initialize m
+  get <- function() x # get the value of x 
+  setInverse <- function(inv) m <<- inv # assign value for m from another environment. Specifically, it is when cacheSolve assigns an inverse of x to m.
+  getInverse <- function() m # get the value of m
+  list(get = get,
        setInverse = setInverse,
-       getInverse = getInverse)
+       getInverse = getInverse) # output a list containing the above functions.
 }
 
 
@@ -24,14 +19,14 @@ makeCacheMatrix <- function(x = matrix())
 
 cacheSolve <- function(x, ...) 
 {
-  m <- x$getInverse()
-  if(!is.null(m)) 
-  {
+  m <- x$getInverse() # x is an instance of makeCacheMatrix, getInverse will retrieve the value of m (the inverse), which is part of instance x.
+  if(!is.null(m)) # m is either null or has been assigned a value of inverse of the matrix contained in instance x. 
+  {               # If it has been assigned a value (by calling cacheSolve once), then m is not null, and it will skip the computation.
     message("getting cached data")
     return(m)
   }
-  data <- x$get()
+  data <- x$get() # get the unsolved matrix.
   m <- solve(data, ...)
-  x$setInverse(m)
+  x$setInverse(m) # set the inverse of the matrix of instance x to its m value
   m
 }
